@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-aks-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres-app
+  template:
+    metadata:
+      labels:
+        app: postgres-app
+    spec:
+      containers:
+      - name: my-postgres-app
+        image: postgres:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+
+# service type loadbalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-app-svc
+spec:
+  selector:
+    app: postgres-app
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: LoadBalancer
